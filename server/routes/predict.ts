@@ -140,6 +140,7 @@ export const handlePredict: RequestHandler = async (req, res) => {
     const is_anomalous = predicted_price < lower || predicted_price > upper;
 
     let explanation: string | undefined;
+    let llmDebugVal: string | undefined = undefined;
     if (is_anomalous) {
       const userStr = JSON.stringify({ brand: body.brand, cpu, ram_gb, storage_gb, rating });
       const prompt = `The following product spec ${userStr} produced a predicted price of $${predicted_price.toFixed(
@@ -153,6 +154,9 @@ export const handlePredict: RequestHandler = async (req, res) => {
         (predicted_price > upper
           ? "High predicted price may reflect premium branding, top-tier CPU/RAM configuration, or limited supply driving up costs."
           : "Low predicted price could indicate entry-level specs, discounting, refurbished stock, or gaps in the training data for this configuration.");
+      if (process.env.DEBUG_LLM === "true") {
+        llmDebugVal = llmRes.error ?? "no_error_info";
+      }
     }
 
     const response: PredictResponse = {
