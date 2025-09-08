@@ -138,6 +138,12 @@ export function PredictForm() {
                   </div>
                 ))}
               </div>
+              {result.llm_debug && (
+                <div className="mt-3 text-xs text-muted-foreground">
+                  <p className="font-medium">LLM debug</p>
+                  <pre className="mt-1 p-2 rounded bg-background/50 text-xs">{result.llm_debug}</pre>
+                </div>
+              )}
             </div>
           </div>
         )}
