@@ -147,9 +147,9 @@ export const handlePredict: RequestHandler = async (req, res) => {
       )}, which seems anomalous compared to the expected range [${lower.toFixed(0)}, ${upper.toFixed(
         0
       )}]. Explain concisely 1-2 sentences why this might happen (e.g., premium branding, supply constraints, currency fluctuations, sparse training data, feature distribution shift).`;
-      const llmText = await llmExplain(prompt);
+      const llmRes = await llmExplain(prompt);
       explanation =
-        llmText ||
+        llmRes.text ||
         (predicted_price > upper
           ? "High predicted price may reflect premium branding, top-tier CPU/RAM configuration, or limited supply driving up costs."
           : "Low predicted price could indicate entry-level specs, discounting, refurbished stock, or gaps in the training data for this configuration.");
