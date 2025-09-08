@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import { handlePredict, handleSampleData } from "./routes/predict";
 
 export function createServer() {
   const app = express();
@@ -20,7 +21,6 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // ML endpoints
-  const { handlePredict, handleSampleData } = await import("./routes/predict");
   app.post("/api/predict", handlePredict);
   app.get("/api/sample-data", handleSampleData);
 
