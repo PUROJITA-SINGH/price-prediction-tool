@@ -187,15 +187,16 @@ export const handlePredict: RequestHandler = async (req, res) => {
 
 export const handleSampleData: RequestHandler = async (_req, res) => {
   try {
-    const url = "https://dummyjson.com/products/category/laptops?limit=50";
+    const url = "https://fakestoreapi.com/products";
     const r = await fetch(url);
     const j = (await r.json()) as any;
-    const items = (j.products || []).map((p: any) => ({
+    const arr = Array.isArray(j) ? j : j.products || [];
+    const items = arr.map((p: any) => ({
       id: p.id,
       title: p.title,
-      brand: p.brand,
+      brand: p.category ?? "",
       description: p.description,
-      rating: p.rating,
+      rating: p?.rating?.rate ?? typeof p.rating === "number" ? p.rating : 0,
       price: p.price,
     }));
     res.json({ source: url, count: items.length, items });
