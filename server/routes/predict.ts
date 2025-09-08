@@ -1,7 +1,6 @@
 import type { RequestHandler } from "express";
 import fs from "node:fs";
 import path from "node:path";
-import fetch from "node-fetch";
 import type { PredictRequest, PredictResponse } from "@shared/api";
 
 // Load regression model artifact (coefficients, scaler, feature order, and y stats)
