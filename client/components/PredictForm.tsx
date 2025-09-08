@@ -119,7 +119,7 @@ export function PredictForm() {
           <div className="mt-4 space-y-4">
             <div>
               <p className="text-sm text-muted-foreground">Estimated Price</p>
-              <p className="text-4xl font-extrabold tracking-tight">${'{'}result.predicted_price.toFixed(0){'}'}</p>
+              <p className="text-4xl font-extrabold tracking-tight">{"$" + result.predicted_price.toFixed(0)}</p>
             </div>
             {result.anomaly.is_anomalous && (
               <div className="rounded-md border border-yellow-300/40 bg-yellow-100/40 dark:bg-yellow-900/20 p-3">
