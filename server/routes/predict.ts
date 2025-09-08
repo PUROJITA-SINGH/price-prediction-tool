@@ -71,10 +71,10 @@ function standardize(x: number, mean: number, std: number): number {
   return std === 0 ? 0 : (x - mean) / std;
 }
 
-async function llmExplain(prompt: string): Promise<string | null> {
+async function llmExplain(prompt: string): Promise<{ text: string | null; error?: string }>{
   const apiKey = process.env.OPENAI_API_KEY || process.env.GROK_API_KEY || process.env.XAI_API_KEY;
   const llm = (process.env.LLM_PROVIDER || "openai").toLowerCase();
-  if (!apiKey) return null;
+  if (!apiKey) return { text: null, error: "no_api_key" };
   try {
     if (llm === "openai") {
       const resp = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -93,15 +93,17 @@ async function llmExplain(prompt: string): Promise<string | null> {
           max_tokens: 200,
         }),
       });
-      if (!resp.ok) return null;
+      if (!resp.ok) {
+        const txt = await resp.text();
+        return { text: null, error: `http_${resp.status}: ${txt.slice(0,200)}` };
+      }
       const data = (await resp.json()) as any;
       const text = data.choices?.[0]?.message?.content?.trim();
-      return text || null;
+      return { text: text || null };
     }
-    // Add other providers if needed
-    return null;
-  } catch {
-    return null;
+    return { text: null, error: "unsupported_provider" };
+  } catch (err: any) {
+    return { text: null, error: String(err?.message ?? err) };
   }
 }
 
