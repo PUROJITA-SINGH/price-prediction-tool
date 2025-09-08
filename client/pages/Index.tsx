@@ -38,7 +38,7 @@ export default function Index() {
               <div className="mt-8 grid grid-cols-3 gap-4 text-sm">
                 <div className="rounded-lg border p-3 bg-white/60 dark:bg-white/5">
                   <p className="font-medium">Public API</p>
-                  <p className="text-muted-foreground">Fetches laptops from DummyJSON</p>
+                  <p className="text-muted-foreground">Fetches products from Fake Store API (fakestoreapi.com)</p>
                 </div>
                 <div className="rounded-lg border p-3 bg-white/60 dark:bg-white/5">
                   <p className="font-medium">Notebook training</p>
