@@ -30,6 +30,7 @@ export interface PredictResponse {
   };
   predicted_price: number;
   anomaly: { is_anomalous: boolean; bounds: { lower: number; upper: number }; explanation?: string };
+  llm_debug?: string;
   model: {
     feature_order: string[];
     coefficients: number[];
