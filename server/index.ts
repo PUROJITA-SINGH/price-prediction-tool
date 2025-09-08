@@ -19,5 +19,10 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // ML endpoints
+  const { handlePredict, handleSampleData } = await import("./routes/predict");
+  app.post("/api/predict", handlePredict);
+  app.get("/api/sample-data", handleSampleData);
+
   return app;
 }
