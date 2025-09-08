@@ -183,6 +183,7 @@ export const handlePredict: RequestHandler = async (req, res) => {
         scaler: m.scaler,
         y_stats: m.y_stats,
       },
+      ...(process.env.DEBUG_LLM === "true" && { llm_debug: llmDebugVal }),
     };
 
     res.status(200).json(response);
