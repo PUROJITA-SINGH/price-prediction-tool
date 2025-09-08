@@ -89,7 +89,7 @@ export default function Index() {
             <div className="md:col-span-2 rounded-xl border p-6 bg-white/60 dark:bg-white/5">
               <p className="text-muted-foreground">Training happens in a Jupyter Notebook using a public API for data collection. The trained model (coefficients, scaler, and target stats) is exported to JSON and loaded by the server for real-time predictions.</p>
               <ul className="list-disc pl-6 mt-4 text-sm space-y-2 text-muted-foreground">
-                <li>Data source: DummyJSON laptops (public API)</li>
+                <li>Data source: Fake Store API (fakestoreapi.com)</li>
                 <li>Features extracted from text: RAM (GB), storage (GB), CPU family, brand score, rating</li>
                 <li>Model: StandardScaler + Linear Regression</li>
                 <li>Anomaly detection via prediction range vs. training distribution</li>
