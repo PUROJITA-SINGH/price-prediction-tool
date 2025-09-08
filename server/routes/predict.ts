@@ -4,7 +4,10 @@ import path from "node:path";
 import type { PredictRequest, PredictResponse } from "@shared/api";
 
 // Load regression model artifact (coefficients, scaler, feature order, and y stats)
-const MODEL_PATH = path.resolve(process.cwd(), "server/models/laptop_price_regression.json");
+const MODEL_PATH = path.resolve(
+  process.cwd(),
+  "server/models/laptop_price_regression.json",
+);
 
 type ModelArtifact = {
   feature_order: string[];
@@ -51,7 +54,8 @@ function cpuLevel(cpu?: string): number {
 }
 
 function parseSpecs(specs?: string) {
-  if (!specs) return {} as { ram_gb?: number; storage_gb?: number; cpu?: string };
+  if (!specs)
+    return {} as { ram_gb?: number; storage_gb?: number; cpu?: string };
   const s = specs.toLowerCase();
   let ram_gb: number | undefined;
   let storage_gb: number | undefined;
@@ -71,8 +75,13 @@ function standardize(x: number, mean: number, std: number): number {
   return std === 0 ? 0 : (x - mean) / std;
 }
 
-async function llmExplain(prompt: string): Promise<{ text: string | null; error?: string }>{
-  const apiKey = process.env.OPENAI_API_KEY || process.env.GROK_API_KEY || process.env.XAI_API_KEY;
+async function llmExplain(
+  prompt: string,
+): Promise<{ text: string | null; error?: string }> {
+  const apiKey =
+    process.env.OPENAI_API_KEY ||
+    process.env.GROK_API_KEY ||
+    process.env.XAI_API_KEY;
   const llm = (process.env.LLM_PROVIDER || "openai").toLowerCase();
   if (!apiKey) return { text: null, error: "no_api_key" };
   try {
@@ -86,7 +95,11 @@ async function llmExplain(prompt: string): Promise<{ text: string | null; error?
         body: JSON.stringify({
           model: process.env.OPENAI_MODEL || "gpt-4o-mini",
           messages: [
-            { role: "system", content: "You are an assistant that explains anomalous price predictions for products succinctly." },
+            {
+              role: "system",
+              content:
+                "You are an assistant that explains anomalous price predictions for products succinctly.",
+            },
             { role: "user", content: prompt },
           ],
           temperature: 0.3,
@@ -95,7 +108,10 @@ async function llmExplain(prompt: string): Promise<{ text: string | null; error?
       });
       if (!resp.ok) {
         const txt = await resp.text();
-        return { text: null, error: `http_${resp.status}: ${txt.slice(0,200)}` };
+        return {
+          text: null,
+          error: `http_${resp.status}: ${txt.slice(0, 200)}`,
+        };
       }
       const data = (await resp.json()) as any;
       const text = data.choices?.[0]?.message?.content?.trim();
@@ -129,7 +145,7 @@ export const handlePredict: RequestHandler = async (req, res) => {
     };
 
     const xStd = m.feature_order.map((f, i) =>
-      standardize(featuresDict[f] ?? 0, m.scaler.means[i], m.scaler.stds[i])
+      standardize(featuresDict[f] ?? 0, m.scaler.means[i], m.scaler.stds[i]),
     );
 
     const dot = xStd.reduce((acc, v, i) => acc + v * m.coefficients[i], 0);
@@ -142,11 +158,17 @@ export const handlePredict: RequestHandler = async (req, res) => {
     let explanation: string | undefined;
     let llmDebugVal: string | undefined = undefined;
     if (is_anomalous) {
-      const userStr = JSON.stringify({ brand: body.brand, cpu, ram_gb, storage_gb, rating });
+      const userStr = JSON.stringify({
+        brand: body.brand,
+        cpu,
+        ram_gb,
+        storage_gb,
+        rating,
+      });
       const prompt = `The following product spec ${userStr} produced a predicted price of $${predicted_price.toFixed(
-        2
+        2,
       )}, which seems anomalous compared to the expected range [${lower.toFixed(0)}, ${upper.toFixed(
-        0
+        0,
       )}]. Explain concisely 1-2 sentences why this might happen (e.g., premium branding, supply constraints, currency fluctuations, sparse training data, feature distribution shift).`;
       const llmRes = await llmExplain(prompt);
       explanation =
@@ -203,7 +225,7 @@ export const handleSampleData: RequestHandler = async (_req, res) => {
       title: p.title,
       brand: p.category ?? "",
       description: p.description,
-      rating: p?.rating?.rate ?? typeof p.rating === "number" ? p.rating : 0,
+      rating: (p?.rating?.rate ?? typeof p.rating === "number") ? p.rating : 0,
       price: p.price,
     }));
     res.json({ source: url, count: items.length, items });
